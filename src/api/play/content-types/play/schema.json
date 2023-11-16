@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plays",
+  "info": {
+    "singularName": "play",
+    "pluralName": "plays",
+    "displayName": "Plays",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "won": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "won_premium": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_bacana": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "prize_id": {
+      "type": "integer",
+      "required": false
+    },
+    "config_id": {
+      "type": "integer"
+    }
+  }
+}

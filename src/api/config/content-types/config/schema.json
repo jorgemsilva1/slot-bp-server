@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "configs",
+  "info": {
+    "singularName": "config",
+    "pluralName": "configs",
+    "displayName": "Configurations",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "private": true
+    },
+    "started_at": {
+      "type": "datetime",
+      "required": true
+    },
+    "ends_at": {
+      "type": "datetime",
+      "required": false
+    },
+    "awards": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::award.award"
+    },
+    "active": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "theme": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::slot.slot"
+    },
+    "plays": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::play.play"
+    },
+    "bacana_user_chance": {
+      "type": "integer",
+      "default": 50,
+      "required": true
+    },
+    "non_bacana_user_chance": {
+      "type": "integer",
+      "required": true,
+      "default": 50
+    }
+  }
+}
