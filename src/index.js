@@ -17,35 +17,47 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }) {
-    const io = require("socket.io")(strapi.server.httpServer, {
-      cors: {
-        // cors setup
-        origin: [process.env.SLOT_URL, process.env.CLIENT_URL], // Replace with your client's origin
-        methods: ["GET", "POST"],
-        credentials: true,
-      },
-    });
+    const {WebSocketServer} = require('ws');
+    const wss = new WebSocketServer({ port: 1338 });
 
-    io.on("connection", function (socket) {
-      //Listening for a connection from the frontend
-      socket.on("prize-won", async (awardId) => {
-        if (!awardId) return socket.emit("bp-prize", null);
+    strapi.wss = wss;
 
-        // Listening for a join connection
-        const item = await strapi.entityService.findOne(
-          "api::award.award",
-          awardId
-        );
+    wss.on('connection', function connection(ws) {
+      ws.on('message', async function message(data) {
+        const playerEmail = data.toString()
+        ws.id = playerEmail
 
-        socket.emit("bp-prize", { prize: item.name });
-      });
+        const player = await strapi.query('api::player.player').findOne({
+          where: { email: playerEmail }
+        });
 
-      socket.on("can-play", (bool) => {
-        if (!bool) {
-          console.log("NÃO PODE JOGAR");
-          socket.emit("block", true);
+        if(player){
+          const today = new Date();
+          const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+          const endOfToday = new Date(today.setHours(23, 59, 59, 999));
+
+          const plays = await strapi.query('api::play.play').findMany({
+            where: {
+              player: { id: player.id },
+              created_at: {
+                $gte: startOfToday,
+                $lte: endOfToday
+              }
+            }
+          });
+
+          if(plays?.length > 5){
+            ws.send('limit')
+          }
+        }
+
+        if (!player) {
+          await strapi.query('api::player.player').create({
+            data: { email: playerEmail }
+          });
         }
       });
+
     });
   },
 };
