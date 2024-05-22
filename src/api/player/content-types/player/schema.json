@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "players",
+  "info": {
+    "singularName": "player",
+    "pluralName": "players",
+    "displayName": "Player"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "is_bacana": {
+      "type": "boolean",
+      "required": true
+    },
+    "plays": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::play.play",
+      "mappedBy": "player"
+    }
+  }
+}
