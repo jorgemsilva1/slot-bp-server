@@ -17,47 +17,46 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }) {
-    const {WebSocketServer} = require('ws');
+    const { WebSocketServer } = require("ws");
     const wss = new WebSocketServer({ port: 1338 });
 
     strapi.wss = wss;
 
-    wss.on('connection', function connection(ws) {
-      ws.on('message', async function message(data) {
-        const playerEmail = data.toString()
-        ws.id = playerEmail
+    wss.on("connection", function connection(ws) {
+      ws.on("message", async function message(data) {
+        const playerEmail = data.toString();
+        ws.id = playerEmail;
 
-        const player = await strapi.query('api::player.player').findOne({
-          where: { email: playerEmail }
+        const player = await strapi.query("api::player.player").findOne({
+          where: { email: playerEmail },
         });
 
-        if(player){
+        if (player) {
           const today = new Date();
           const startOfToday = new Date(today.setHours(0, 0, 0, 0));
           const endOfToday = new Date(today.setHours(23, 59, 59, 999));
 
-          const plays = await strapi.query('api::play.play').findMany({
+          const plays = await strapi.query("api::play.play").findMany({
             where: {
               player: { id: player.id },
               created_at: {
                 $gte: startOfToday,
-                $lte: endOfToday
-              }
-            }
+                $lte: endOfToday,
+              },
+            },
           });
 
-          if(plays?.length > 5){
-            ws.send('limit')
+          if (plays?.length >= 5 || plays?.find((play) => play.won)) {
+            ws.send("limit");
           }
         }
 
         if (!player) {
-          await strapi.query('api::player.player').create({
-            data: { email: playerEmail }
+          await strapi.query("api::player.player").create({
+            data: { email: playerEmail },
           });
         }
       });
-
     });
   },
 };
