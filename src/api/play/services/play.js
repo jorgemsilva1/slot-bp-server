@@ -11,13 +11,9 @@ module.exports = createCoreService("api::play.play", ({ strapi }) => ({
     // Extract player email from ctx
     const playerEmail = ctx[0].data.player;
 
-    console.log(playerEmail);
-
     const player = await strapi.query("api::player.player").findOne({
       where: { email: playerEmail },
     });
-
-    console.log(player);
 
     if (player) {
       ctx[0].data.player = player.id;
@@ -50,6 +46,29 @@ module.exports = createCoreService("api::play.play", ({ strapi }) => ({
               },
             },
           });
+
+          if (award){
+            const SibApiV3Sdk = require('@getbrevo/brevo');
+
+            let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+            let apiKey = apiInstance.authentications['apiKey'];
+            apiKey.apiKey = process.env.BREVO_KEY;
+
+            let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+            sendSmtpEmail.subject = "Prémio Bacana PLAY!";
+            sendSmtpEmail.htmlContent = "<html><body><h1>Viva! Acabaste de receber o seguinte premio: {{params.prize}}</h1></body></html>";
+            sendSmtpEmail.sender = {"email":"guilherme@dvagar.cc","name":"Bacana Play"};
+            sendSmtpEmail.to = [{"email":client.id}];
+            sendSmtpEmail.params = {"prize":award.name};
+
+            apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
+
+            }, function(error) {
+              console.error(error);
+            });
+          }
 
           if (plays?.length >= 4 || plays?.find((play) => play.won)) {
             if (!award) {
