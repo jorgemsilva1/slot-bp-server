@@ -1,5 +1,8 @@
 "use strict";
 
+const {createServer: HttpsServer} = require("https");
+const fs = require("fs");
+const {WebSocketServer} = require("ws");
 module.exports = {
   /**
    * An asynchronous register function that runs before
@@ -17,9 +20,17 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }) {
-    const { WebSocketServer } = require("ws");
-    const wss = new WebSocketServer({ port: 1338 });
-
+    const HttpsServer = require('https').createServer;
+    const fs = require("fs");
+    const server = HttpsServer({
+      cert: fs.readFileSync('/etc/letsencrypt/live/bp-strapi.dvagar.cc/fullchain.pem'),
+      key: fs.readFileSync('/etc/letsencrypt/live/bp-strapi.dvagar.cc/privkey.pem')
+    })
+    const wss = new WebSocketServer(
+      {
+        server: server,
+        port: 1338
+      });
     strapi.wss = wss;
 
     wss.on("connection", function connection(ws) {
