@@ -34,8 +34,7 @@ module.exports = {
     }).listen(1338);
     const wss = new WebSocketServer(
       {
-        server: https,
-        port: 1338
+        server: https
       });
     strapi.wss = wss;
 
