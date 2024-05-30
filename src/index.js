@@ -20,23 +20,21 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }) {
-
-    const https = require('node:https');
-    const fs = require('node:fs');
-    const options = {
+    const HttpsServer = require('https').createServer;
+    const fs = require("fs");
+    const server = HttpsServer({
       cert: fs.readFileSync('/etc/letsencrypt/live/bp-strapi.dvagar.cc/fullchain.pem'),
       key: fs.readFileSync('/etc/letsencrypt/live/bp-strapi.dvagar.cc/privkey.pem')
-    };
-
-    https.createServer(options, (req, res) => {
-      res.writeHead(200);
-      res.end('hello world\n');
-    }).listen(1338);
+    })
     const wss = new WebSocketServer(
       {
-        server: https
+        server: server
       });
     strapi.wss = wss;
+
+    server.listen(1338, () => {
+      console.log('HTTPS server and WebSocket server are listening on port 1338');
+    });
 
     wss.on("connection", function connection(ws) {
       ws.on("message", async function message(data) {
