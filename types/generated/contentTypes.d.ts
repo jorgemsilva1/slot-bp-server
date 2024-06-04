@@ -698,6 +698,7 @@ export interface ApiAwardAward extends Schema.CollectionType {
     rarity_level: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<1>;
+    daily_max: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<-1>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

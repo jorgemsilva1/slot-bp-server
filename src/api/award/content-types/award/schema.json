@@ -41,6 +41,11 @@
       "type": "integer",
       "default": 1,
       "required": true
+    },
+    "daily_max": {
+      "type": "integer",
+      "default": -1,
+      "required": true
     }
   }
 }
