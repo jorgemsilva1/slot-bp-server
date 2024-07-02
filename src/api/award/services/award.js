@@ -6,4 +6,46 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::award.award');
+const fs = require('fs');
+const path = require('path');
+
+module.exports = createCoreService('api::award.award', ({ strapi }) => ({
+  async update(params, data, { files } = {}) {
+
+    const allAwards = await strapi.entityService.findMany('api::award.award', {});
+
+    // Extract the quantities and prepare the row for the CSV file
+    const qtys = allAwards.map(award => award.qty);
+    const currentDate = new Date().toISOString();
+    const csvRow = `${currentDate},${qtys.join(',')}\n`;
+
+    // Define the file path
+    const filePath = path.join('./awards_data.csv');
+
+    // Check if the file exists to determine if we should include the header
+    const fileExists = fs.existsSync(filePath);
+
+    if (!fileExists) {
+      // Prepare the header row (date, qty1, qty2, qty3, ...)
+      const header = `date,${allAwards.map((award, index) => `${award.name}`).join(',')}\n`;
+      fs.writeFileSync(filePath, header + csvRow, (err) => {
+        if (err) {
+          strapi.log.error('Error writing to CSV file', err);
+        } else {
+          strapi.log.info('CSV file has been created.');
+        }
+      });
+    } else {
+      // Append the new row to the existing file
+      fs.appendFileSync(filePath, csvRow, (err) => {
+        if (err) {
+          strapi.log.error('Error appending to CSV file', err);
+        } else {
+          strapi.log.info('CSV file has been updated.');
+        }
+      });
+    }
+
+    return await super.update(params, data, {files});
+  },
+}));

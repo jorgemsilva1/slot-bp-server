@@ -690,7 +690,6 @@ export interface ApiAwardAward extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
-    icon: Attribute.Media & Attribute.Required;
     index: Attribute.Integer;
     stock: Attribute.Integer;
     qty: Attribute.Integer;
