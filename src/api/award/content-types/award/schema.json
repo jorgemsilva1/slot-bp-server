@@ -33,6 +33,13 @@
       "type": "integer",
       "default": 1,
       "required": true
+    },
+    "multiplier": {
+      "type": "enumeration",
+      "enum": [
+        "Double",
+        "Triple"
+      ]
     }
   }
 }

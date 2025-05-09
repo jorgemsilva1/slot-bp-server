@@ -482,6 +482,50 @@ export interface PluginUploadFolder extends Schema.CollectionType {
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<{
+        min: 1;
+        max: 50;
+      }>;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -633,50 +677,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
-    code: Attribute.String & Attribute.Unique;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiAwardAward extends Schema.CollectionType {
   collectionName: 'awards';
   info: {
@@ -697,6 +697,7 @@ export interface ApiAwardAward extends Schema.CollectionType {
     rarity_level: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<1>;
+    multiplier: Attribute.Enumeration<['Double', 'Triple']>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -734,6 +735,26 @@ export interface ApiConfigConfig extends Schema.CollectionType {
       'oneToMany',
       'api::award.award'
     >;
+    awards_bacana: Attribute.Relation<
+      'api::config.config',
+      'oneToMany',
+      'api::award.award'
+    >;
+    awards_bacana_deposit: Attribute.Relation<
+      'api::config.config',
+      'oneToMany',
+      'api::award.award'
+    >;
+    force_bacana_award: Attribute.Relation<
+      'api::config.config',
+      'oneToMany',
+      'api::award.award'
+    >;
+    force_deposit_bacana_award: Attribute.Relation<
+      'api::config.config',
+      'oneToMany',
+      'api::award.award'
+    >;
     active: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     theme: Attribute.Relation<
       'api::config.config',
@@ -748,7 +769,19 @@ export interface ApiConfigConfig extends Schema.CollectionType {
     bacana_user_chance: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<50>;
+    bacana_user_second_chance: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<50>;
     non_bacana_user_chance: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<50>;
+    non_bacana_user_second_chance: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<50>;
+    deposit_bacana_user_chance: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<50>;
+    deposit_bacana_user_second_chance: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<50>;
     createdAt: Attribute.DateTime;
@@ -831,10 +864,10 @@ declare module '@strapi/types' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
       'api::award.award': ApiAwardAward;
       'api::config.config': ApiConfigConfig;
       'api::play.play': ApiPlayPlay;

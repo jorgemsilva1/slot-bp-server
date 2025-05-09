@@ -1,5 +1,7 @@
 'use strict';
 
+const setupWebSocketServer = require('./websocket');
+
 module.exports = {
   /**
    * An asynchronous register function that runs before
@@ -16,5 +18,11 @@ module.exports = {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/*{ strapi }*/) {},
+  async bootstrap({ strapi }) {
+    if (strapi.server && strapi.server.httpServer) {
+      setupWebSocketServer(strapi.server.httpServer);
+    } else {
+      console.warn('HTTP server not available for WebSocket setup.');
+    }
+  },
 };

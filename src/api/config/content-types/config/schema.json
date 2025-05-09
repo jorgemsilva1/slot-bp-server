@@ -30,6 +30,26 @@
       "relation": "oneToMany",
       "target": "api::award.award"
     },
+    "awards_bacana": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::award.award"
+    },
+    "awards_bacana_deposit": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::award.award"
+    },
+    "force_bacana_award": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::award.award"
+    },
+    "force_deposit_bacana_award": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::award.award"
+    },
     "active": {
       "type": "boolean",
       "default": false,
@@ -50,10 +70,30 @@
       "default": 50,
       "required": true
     },
+    "bacana_user_second_chance": {
+      "type": "integer",
+      "default": 50,
+      "required": true
+    },
     "non_bacana_user_chance": {
       "type": "integer",
       "required": true,
       "default": 50
+    },
+    "non_bacana_user_second_chance": {
+      "type": "integer",
+      "default": 50,
+      "required": true
+    },
+    "deposit_bacana_user_chance": {
+      "type": "integer",
+      "required": true,
+      "default": 50
+    },
+    "deposit_bacana_user_second_chance": {
+      "type": "integer",
+      "default": 50,
+      "required": true
     }
   }
 }
