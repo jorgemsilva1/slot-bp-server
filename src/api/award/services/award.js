@@ -19,10 +19,13 @@ module.exports = createCoreService('api::award.award', ({ strapi }) => ({
     const currentDate = new Date().toISOString();
     const csvRow = `${currentDate},${qtys.join(',')}\n`;
 
-    // Define the file path
     const os = require('os');
-    const filePath = path.join(os.tmpdir(), 'awards_data.csv');
+    const path = require('path');
 
+// Build path to the user's Desktop
+    const filePath = path.join(os.homedir(), 'Desktop', 'awards_data.csv');
+
+    console.log(filePath);
     // Check if the file exists to determine if we should include the header
     const fileExists = fs.existsSync(filePath);
 
