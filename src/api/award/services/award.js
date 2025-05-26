@@ -25,7 +25,6 @@ module.exports = createCoreService('api::award.award', ({ strapi }) => ({
 // Build path to the user's Desktop
     const filePath = path.join(os.homedir(), 'Desktop', 'awards_data.csv');
 
-    console.log(filePath);
     // Check if the file exists to determine if we should include the header
     const fileExists = fs.existsSync(filePath);
 
