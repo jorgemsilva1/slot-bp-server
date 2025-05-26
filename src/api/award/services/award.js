@@ -7,8 +7,6 @@
 const { createCoreService } = require('@strapi/strapi').factories;
 
 const fs = require('fs');
-const path = require('path');
-
 module.exports = createCoreService('api::award.award', ({ strapi }) => ({
   async update(params, data, { files } = {}) {
 
