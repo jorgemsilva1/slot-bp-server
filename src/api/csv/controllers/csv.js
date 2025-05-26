@@ -24,7 +24,7 @@ module.exports = {
     const fileExists = fs.existsSync(filePath);
     if (!fileExists) {
       // Header: date plus each key name
-      const headerCols = Object.keys(data).join(',');
+      const headerCols = 'play1,play2,play3,play4,play5,isBacana,isDeposit,hasWon';
       const header = `date,${headerCols}\n`;
       fs.writeFileSync(filePath, header + csvRow);
     } else {
